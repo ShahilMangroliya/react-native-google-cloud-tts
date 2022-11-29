@@ -4,18 +4,26 @@ A Library for google cloud based text to speech implementation
 
 ## Installation
 
-```sh
+using either Yarn:
+
+```
+yarn add react-native-google-cloud-tts
+```
+
+or npm:
+
+```
 npm install react-native-google-cloud-tts
 ```
 
 ## Usage
 
 ```js
-import { multiply } from 'react-native-google-cloud-tts';
+import { textToSpeech, handleStoragePermission } from 'react-native-google-cloud-tts';
 
 // ...
-
-const result = await multiply(3, 7);
+const isGranted = await handleStoragePermission();
+const result = textToSpeech('Hello World');
 ```
 
 ## Contributing
