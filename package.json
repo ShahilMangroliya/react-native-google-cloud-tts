@@ -20,6 +20,9 @@
   "author": "Shahil Mangroliya <shahil.mangroliya123@gmail.com>",
   "license": "ISC",
   "peerDependencies": {
-    "react-native": ">=0.42.0"
+    "react-native": "*",
+    "react-native-fs":"*",
+    "react-native-permissions":">3.0.0",
+    "react-native-sound":"*"
   }
 }
