@@ -1,27 +1,26 @@
 /** @format */
 
-
-import { Platform } from "react-native";
-import RNFS from "react-native-fs";
+import { Platform } from 'react-native';
+import RNFS from 'react-native-fs';
 import {
   PERMISSIONS,
   requestMultiple,
   RESULTS,
-} from "react-native-permissions";
-import Sound from "react-native-sound";
-let speechRef = null;
-let speechQueue = [];
-let speechTextQueue = [];
+} from 'react-native-permissions';
+import Sound from 'react-native-sound';
+let speechRef: any = null;
+let speechQueue: any = [];
+let speechTextQueue: any = [];
 let isPlaying = false;
 let isDownoading = false;
 let isPermissionGranted = false;
-let TOKEN = "";
+let TOKEN = '';
 
-const addToQueue = (data) => {
+const addToQueue = (data: any) => {
   speechQueue.push(data);
 };
 
-const addToTextQueue = (data) => {
+const addToTextQueue = (data: any) => {
   speechTextQueue.push(data);
 };
 
@@ -32,7 +31,7 @@ const readFromTextQueue = () => {
   return speechTextQueue.splice(0, 1)[0];
 };
 
-const speech = async (text) => {
+const speech = async (text: any) => {
   return new Promise(async (resolve, reject) => {
     try {
       const audioData = await getAudioData(text);
@@ -41,20 +40,20 @@ const speech = async (text) => {
       if (!isPlaying) {
         handleSpeechQueue();
       }
-      resolve();
+      resolve(true);
     } catch (error) {
       reject(error);
     }
   });
 };
 
-const writeAudioToStorage = (data) => {
+const writeAudioToStorage = (data: any) => {
   return new Promise(async (resolve, reject) => {
     try {
       const path = `${
-        RNFS.TemporaryDirectoryPath + (Platform.OS == "android" ? "/" : "")
+        RNFS.TemporaryDirectoryPath + (Platform.OS == 'android' ? '/' : '')
       }pointz_${new Date().getTime()}.wav`;
-      await RNFS.writeFile(path, data, "base64");
+      await RNFS.writeFile(path, data, 'base64');
       resolve(path);
     } catch (error) {
       reject(error);
@@ -69,7 +68,7 @@ const handleSpeechQueue = async () => {
       const music = readFromQueue();
       await playMusic(music);
     } catch (error) {
-        throw error
+      throw error;
     }
   }
   isPlaying = false;
@@ -82,23 +81,23 @@ const handleTextSpeechQueue = async () => {
       const text = readFromTextQueue();
       await speech(text);
     } catch (error) {
-        throw error
+      throw error;
     }
   }
   isDownoading = false;
 };
 
-const playMusic = (music) => {
+const playMusic = (music: any) => {
   return new Promise((resolve, reject) => {
-    speechRef = new Sound("file://" + music, null, (error) => {
+    speechRef = new Sound('file://' + music, undefined, (error: any) => {
       if (error) {
         reject(error);
-        console.warn("failed to load the sound", error);
+        console.warn('failed to load the sound', error);
       }
-      speechRef?.play((success) => {
+      speechRef?.play((success: any) => {
         if (!success) {
-          reject("playback failed due to audio decoding errors");
-          console.warn("playback failed due to audio decoding errors");
+          reject('playback failed due to audio decoding errors');
+          console.warn('playback failed due to audio decoding errors');
         } else {
           resolve(true);
         }
@@ -107,7 +106,7 @@ const playMusic = (music) => {
   });
 };
 
-const getAudioData = async (text = "") => {
+const getAudioData = async (text = '') => {
   return new Promise(async (resolve, reject) => {
     const key = TOKEN;
     const address = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`;
@@ -122,25 +121,25 @@ const getAudioData = async (text = "") => {
   });
 };
 
-const createRequest = (text) => ({
+const createRequest = (text: any) => ({
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     input: {
       text,
     },
     voice: {
-      languageCode: "en-US",
-      name: "en-US-Wavenet-D",
+      languageCode: 'en-US',
+      name: 'en-US-Wavenet-D',
     },
     audioConfig: {
-      audioEncoding: "LINEAR16",
+      audioEncoding: 'LINEAR16',
       pitch: 0,
       speakingRate: 1,
     },
   }),
-  method: "POST",
+  method: 'POST',
 });
 
 export const cleanTempFolder = async () => {
@@ -149,16 +148,16 @@ export const cleanTempFolder = async () => {
     await RNFS.unlink(path);
     await RNFS.mkdir(path);
   } catch (error) {
-    throw error
-}
+    throw error;
+  }
 };
 
 export const handleStoragePermission = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (Platform.OS == "ios") {
+      if (Platform.OS === 'ios') {
         isPermissionGranted = true;
-        resolve();
+        resolve(true);
       } else {
         const permissionList = [
           PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
@@ -166,15 +165,16 @@ export const handleStoragePermission = () => {
         ];
         const res = await requestMultiple(permissionList);
         if (
-          res[permissionList[0]] === RESULTS.GRANTED &&
-          res[permissionList[1]] === RESULTS.GRANTED
+          res[PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE] === RESULTS.GRANTED &&
+          res[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === RESULTS.GRANTED
         ) {
           isPermissionGranted = true;
-          resolve();
+          resolve(true);
         } else {
           const isBlocked =
-            res[permissionList[0]] === RESULTS.BLOCKED ||
-            res[permissionList[1]] === RESULTS.BLOCKED;
+            res[PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE] ===
+              RESULTS.BLOCKED ||
+            res[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === RESULTS.BLOCKED;
           isPermissionGranted = false;
           reject({ isStoragePermissionBlocked: isBlocked });
         }
@@ -186,7 +186,7 @@ export const handleStoragePermission = () => {
   });
 };
 
-export const textToSpeech = async (text) => {
+export const textToSpeech = async (text: any) => {
   try {
     if (!isPermissionGranted) {
       await handleStoragePermission();
@@ -200,10 +200,10 @@ export const textToSpeech = async (text) => {
       }
     }
   } catch (error) {
-    throw error
+    throw error;
   }
 };
 
-export const setApiKey = (key) => {
-    TOKEN = key;
-}
+export const setApiKey = (key: string) => {
+  TOKEN = key;
+};
