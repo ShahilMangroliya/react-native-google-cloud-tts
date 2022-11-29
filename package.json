@@ -18,7 +18,7 @@
     "google-cloud"
   ],
   "author": "Shahil Mangroliya <shahil.mangroliya123@gmail.com>",
-  "license": "ISC",
+  "license": "",
   "peerDependencies": {
     "react-native": "*",
     "react-native-fs":"*",
