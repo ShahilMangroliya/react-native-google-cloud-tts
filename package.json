@@ -1,12 +1,25 @@
 {
   "name": "react-native-google-cloud-tts",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Library for google cloud based text to speech implementation",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "Shahil Mangroliya",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShahilMangroliya/react-native-google-cloud-tts"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "tts",
+    "text-to-speech",
+    "google-cloud"
+  ],
+  "author": "Shahil Mangroliya <shahil.mangroliya123@gmail.com>",
+  "license": "ISC",
+  "peerDependencies": {
+    "react-native": ">=0.42.0"
+  }
 }
