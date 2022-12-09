@@ -2,39 +2,37 @@
 
 import { Platform } from 'react-native';
 import RNFS from 'react-native-fs';
-import {
-  PERMISSIONS,
-  requestMultiple,
-  RESULTS,
-} from 'react-native-permissions';
 import Sound from 'react-native-sound';
 let speechRef: any = null;
-let speechQueue: any = [];
-let speechTextQueue: any = [];
-let isPlaying = false;
-let isDownoading = false;
-let isPermissionGranted = false;
-let TOKEN = '';
+let speechQueue: string[] = [];
+let speechTextQueue: string[] = [];
+let isPlaying: boolean = false;
+let isDownoading: boolean = false;
+let TOKEN: string = '';
 
-const addToQueue = (data: any) => {
+interface IGoogleApIRes {
+  audioContent: string;
+}
+
+const addToQueue = (data: string) => {
   speechQueue.push(data);
 };
 
-const addToTextQueue = (data: any) => {
+const addToTextQueue = (data: string) => {
   speechTextQueue.push(data);
 };
 
 const readFromQueue = () => {
-  return speechQueue.splice(0, 1)[0];
+  return speechQueue.splice(0, 1)[0] ?? '';
 };
 const readFromTextQueue = () => {
-  return speechTextQueue.splice(0, 1)[0];
+  return speechTextQueue.splice(0, 1)[0] ?? '';
 };
 
-const speech = async (text: any) => {
+const speech = async (text: string) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const audioData = await getAudioData(text);
+      const audioData: string = await getAudioData(text);
       const path = await writeAudioToStorage(audioData);
       addToQueue(path);
       if (!isPlaying) {
@@ -47,10 +45,10 @@ const speech = async (text: any) => {
   });
 };
 
-const writeAudioToStorage = (data: any) => {
-  return new Promise(async (resolve, reject) => {
+const writeAudioToStorage = (data: string) => {
+  return new Promise<string>(async (resolve, reject) => {
     try {
-      const path = `${
+      const path: string = `${
         RNFS.TemporaryDirectoryPath + (Platform.OS == 'android' ? '/' : '')
       }pointz_${new Date().getTime()}.wav`;
       await RNFS.writeFile(path, data, 'base64');
@@ -87,14 +85,14 @@ const handleTextSpeechQueue = async () => {
   isDownoading = false;
 };
 
-const playMusic = (music: any) => {
-  return new Promise((resolve, reject) => {
-    speechRef = new Sound('file://' + music, undefined, (error: any) => {
+const playMusic = (music: string) => {
+  return new Promise<boolean | string>((resolve, reject) => {
+    speechRef = new Sound('file://' + music, undefined, (error: string) => {
       if (error) {
         reject(error);
         console.warn('failed to load the sound', error);
       }
-      speechRef?.play((success: any) => {
+      speechRef?.play((success: boolean) => {
         if (!success) {
           reject('playback failed due to audio decoding errors');
           console.warn('playback failed due to audio decoding errors');
@@ -107,13 +105,13 @@ const playMusic = (music: any) => {
 };
 
 const getAudioData = async (text = '') => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<string>(async (resolve, reject) => {
     const key = TOKEN;
     const address = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`;
     const payload = createRequest(text);
     try {
       const response = await fetch(`${address}`, payload);
-      const result = await response.json();
+      const result: IGoogleApIRes = await response.json();
       resolve(result?.audioContent);
     } catch (err) {
       reject(err);
@@ -121,7 +119,7 @@ const getAudioData = async (text = '') => {
   });
 };
 
-const createRequest = (text: any) => ({
+const createRequest = (text: string) => ({
   headers: {
     'Content-Type': 'application/json',
   },
@@ -142,6 +140,10 @@ const createRequest = (text: any) => ({
   method: 'POST',
 });
 
+/**
+use this method at opening of your app to clear previous catch from this lib
+*/
+
 export const cleanTempFolder = async () => {
   try {
     const path = RNFS.TemporaryDirectoryPath;
@@ -152,57 +154,25 @@ export const cleanTempFolder = async () => {
   }
 };
 
-export const handleStoragePermission = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (Platform.OS === 'ios') {
-        isPermissionGranted = true;
-        resolve(true);
-      } else {
-        const permissionList = [
-          PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-          PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-        ];
-        const res = await requestMultiple(permissionList);
-        if (
-          res[PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE] === RESULTS.GRANTED &&
-          res[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === RESULTS.GRANTED
-        ) {
-          isPermissionGranted = true;
-          resolve(true);
-        } else {
-          const isBlocked =
-            res[PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE] ===
-              RESULTS.BLOCKED ||
-            res[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === RESULTS.BLOCKED;
-          isPermissionGranted = false;
-          reject({ isStoragePermissionBlocked: isBlocked });
-        }
-      }
-    } catch (error) {
-      isPermissionGranted = false;
-      reject(error);
-    }
-  });
-};
-
-export const textToSpeech = async (text: any) => {
+/**
+use this for Text to Speech
+*/
+export const textToSpeech = async (text: string) => {
   try {
-    if (!isPermissionGranted) {
-      await handleStoragePermission();
-    }
-    if (isPermissionGranted) {
-      if (text) {
-        addToTextQueue(text);
-        if (!isDownoading) {
-          handleTextSpeechQueue();
-        }
+    if (text) {
+      addToTextQueue(text);
+      if (!isDownoading) {
+        handleTextSpeechQueue();
       }
     }
   } catch (error) {
     throw error;
   }
 };
+
+/**
+set API key from google cloud
+*/
 
 export const setApiKey = (key: string) => {
   TOKEN = key;

@@ -19,11 +19,25 @@ npm install react-native-google-cloud-tts
 ## Usage
 
 ```js
-import { textToSpeech, handleStoragePermission } from 'react-native-google-cloud-tts';
+import {
+  cleanTempFolder,
+  setApiKey,
+  textToSpeech,
+} from 'react-native-google-cloud-tts';
 
 // ...
-const isGranted = await handleStoragePermission();
+setApiKey('YOUR_API_KEY');
 const result = textToSpeech('Hello World');
+```
+
+```js
+import { cleanTempFolder, setApiKey } from 'react-native-google-cloud-tts';
+
+// ...
+useeffect(() => {
+  cleanTempFolder();
+  setApiKey('YOUR_API_KEY');
+});
 ```
 
 ## Contributing

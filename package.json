@@ -1,6 +1,6 @@
 {
   "name": "react-native-google-cloud-tts",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -38,7 +38,11 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "tts",
+    "text to speech",
+    "text-to-speech",
+    "cloud-tts"
   ],
   "repository": "https://github.com/ShahilMangroliya/react-native-google-cloud-tts",
   "author": "Shahil Mangroliya <shahil.mangroliya123@gmail.com> (https://github.com/ShahilMangroliya)",
@@ -78,9 +82,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-fs": "^2.20.0",
-    "react-native-permissions": "^3.6.1",
-    "react-native-sound": "^0.11.2"
+    "react-native-fs": ">=2.20.0",
+    "react-native-sound": ">=0.11.2"
   },
   "engines": {
     "node": ">= 16.0.0"
@@ -158,5 +161,9 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "react-native-fs": "^2.20.0",
+    "react-native-sound": "^0.11.2"
   }
 }

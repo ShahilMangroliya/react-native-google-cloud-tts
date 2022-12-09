@@ -1,18 +1,25 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-google-cloud-tts';
+import {
+  cleanTempFolder,
+  setApiKey,
+  textToSpeech,
+} from 'react-native-google-cloud-tts';
+
+const speak = () => {
+  textToSpeech('Hello World');
+};
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
   React.useEffect(() => {
-    multiply(3, 7).then(setResult);
+    cleanTempFolder();
+    setApiKey('YOUR_API_KEY');
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text onPress={speak}>Press Me</Text>
     </View>
   );
 }

@@ -5224,6 +5224,11 @@ react-native-codegen@^0.70.6:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-google-cloud-tts@*:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-google-cloud-tts/-/react-native-google-cloud-tts-1.0.4.tgz#7b2bac080f75d4cd04b59d18ae1cd1916f84e348"
+  integrity sha512-OTHqd5ow5MOWKLumAWjyUuhJLtChnaut1SUA6FeMLVewghPgr040ckeyodhokz9VWvaiIrvPZyeWjX0mWjl6MA==
+
 react-native-gradle-plugin@^0.70.3:
   version "0.70.3"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz#cbcf0619cbfbddaa9128701aa2d7b4145f9c4fc8"
