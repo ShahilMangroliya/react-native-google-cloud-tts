@@ -31,12 +31,11 @@ const result = textToSpeech('Hello World');
 ```
 
 ```js
-import { cleanTempFolder, setApiKey } from 'react-native-google-cloud-tts';
+import { cleanTempFolder } from 'react-native-google-cloud-tts';
 
 // ...
 useeffect(() => {
   cleanTempFolder();
-  setApiKey('YOUR_API_KEY');
 });
 ```
 

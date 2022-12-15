@@ -49,7 +49,7 @@ const writeAudioToStorage = (data: string) => {
   return new Promise<string>(async (resolve, reject) => {
     try {
       const path: string = `${
-        RNFS.TemporaryDirectoryPath + (Platform.OS == 'android' ? '/' : '')
+        RNFS.TemporaryDirectoryPath + (Platform.OS === 'android' ? '/' : '')
       }pointz_${new Date().getTime()}.wav`;
       await RNFS.writeFile(path, data, 'base64');
       resolve(path);
